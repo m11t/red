@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, map, shareReplay, startWith, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { SiteTitleService } from '@red-probeaufgabe/core';
 import { FhirSearchFn, IFhirPatient, IFhirPractitioner, IFhirSearchResponse } from '@red-probeaufgabe/types';
-import { IUnicornTableColumn } from '@red-probeaufgabe/ui';
+import { IUnicornTableColumn, SearchCriteria } from '@red-probeaufgabe/ui';
 import { AbstractSearchFacadeService } from '@red-probeaufgabe/search';
 
 @Component({
@@ -12,6 +12,18 @@ import { AbstractSearchFacadeService } from '@red-probeaufgabe/search';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent {
+
+  /**
+   * [FormControl](https://angular.io/api/forms/FormGroup) for the current search criteria
+   *
+   * @type {FormControl}
+   * @memberof DashboardComponent
+   */
+  currentSearchCriteria = new BehaviorSubject<SearchCriteria>({
+    search: '',
+    searchFn: FhirSearchFn.SearchAll
+  } as SearchCriteria);
+
   // Init unicorn columns to display
   columns: Set<IUnicornTableColumn> = new Set<IUnicornTableColumn>([
     'number',
@@ -25,15 +37,13 @@ export class DashboardComponent {
   /*
    * Implement search on keyword or fhirSearchFn change
    **/
-  search$: Observable<IFhirSearchResponse<IFhirPatient | IFhirPractitioner>> = this.searchFacade
-    .search(FhirSearchFn.SearchAll, '')
-    .pipe(
-      catchError(this.handleError),
-      tap((data) => {
-        this.isLoading = false;
-      }),
-      shareReplay(),
-    );
+  search$: Observable<IFhirSearchResponse<IFhirPatient | IFhirPractitioner>> = this.currentSearchCriteria.pipe(
+    switchMap((criteria: SearchCriteria) => this.searchFacade.search(criteria.searchFn, criteria.search)),
+    catchError(this.handleError),
+    tap((data) => {
+      this.isLoading = false;
+    })
+  )
 
   entries$: Observable<Array<IFhirPatient | IFhirPractitioner>> = this.search$.pipe(
     map((data) => !!data && data.entry),
@@ -45,7 +55,10 @@ export class DashboardComponent {
     startWith(0),
   );
 
-  constructor(private siteTitleService: SiteTitleService, private searchFacade: AbstractSearchFacadeService) {
+  constructor(
+    private siteTitleService: SiteTitleService, 
+    private searchFacade: AbstractSearchFacadeService
+  ) {
     this.siteTitleService.setSiteTitle('Dashboard');
   }
 

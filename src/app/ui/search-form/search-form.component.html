@@ -1,1 +1,18 @@
-<!-- implement search form here -->
+<form [formGroup]="formgroup">
+    <mat-form-field class="search-input">
+        <mat-label>Search for</mat-label>
+        <input type="text" matInput [formControl]="formgroup.get('search')">
+        <mat-error *ngIf="formgroup.get('search').hasError('pattern')">
+          Only the following characters are allowed: a-z, A-Z, 0-9
+        </mat-error>
+    </mat-form-field>
+    
+    <mat-form-field class="select-input">
+        <mat-label>Filter results by</mat-label>
+        <mat-select [formControl]="formgroup.get('searchFn')">
+            <mat-option *ngFor="let filter of filters" [value]="filter.value">
+                {{filter.label}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</form>
