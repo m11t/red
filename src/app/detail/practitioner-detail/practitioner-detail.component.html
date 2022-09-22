@@ -4,10 +4,16 @@
             <img *ngIf="practitioner.photo" [src]="'data:'+practitioner.photo[0].contentType+';base64,'+practitioner.photo[0].data">
         </div>
         <mat-card-title>{{ practitioner.name }}</mat-card-title>
-        <mat-card-subtitle>{{ practitioner.gender }}</mat-card-subtitle>
+        <mat-card-subtitle>
+            Gender: {{ practitioner.gender ? practitioner.gender : 'Unknown' }}, 
+            Birthdate: {{ practitioner.birthDate ? (practitioner.birthDate | date) : 'Unknown' }}
+        </mat-card-subtitle>
     </mat-card-header>
     
     <mat-card-content>
-        {{ practitioner.address }}
+        <p>
+            {{ practitioner.address }}
+        </p>
+        <p [innerHTML]="practitioner.text.div"></p>
     </mat-card-content>
 </mat-card>

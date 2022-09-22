@@ -10,6 +10,7 @@ import { PractitionerDetailResolver } from './practitioner-detail/practitioner-d
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { MatInputModule } from '@angular/material/input';
     DetailRoutingModule,
     MatCardModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatDividerModule
   ],
   providers: [
     PatientDetailResolver,
