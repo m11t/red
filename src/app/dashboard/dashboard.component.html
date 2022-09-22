@@ -7,6 +7,7 @@
       [entries]="entries$ | async"
       [isLoading]="isLoading"
       [totalLength]="totalLength$ | async"
+      (clickedRow)="goTo($event)"
     ></app-unicorn-table>
   </div>
 </app-grid-container>

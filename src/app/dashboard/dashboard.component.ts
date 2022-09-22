@@ -5,6 +5,7 @@ import { SiteTitleService } from '@red-probeaufgabe/core';
 import { FhirSearchFn, IFhirPatient, IFhirPractitioner, IFhirSearchResponse } from '@red-probeaufgabe/types';
 import { IUnicornTableColumn, SearchCriteria } from '@red-probeaufgabe/ui';
 import { AbstractSearchFacadeService } from '@red-probeaufgabe/search';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -56,6 +57,7 @@ export class DashboardComponent {
   );
 
   constructor(
+    private router: Router,
     private siteTitleService: SiteTitleService, 
     private searchFacade: AbstractSearchFacadeService
   ) {
@@ -64,5 +66,15 @@ export class DashboardComponent {
 
   private handleError(): Observable<IFhirSearchResponse<IFhirPatient | IFhirPractitioner>> {
     return of({ entry: [], total: 0 });
+  }
+
+  /**
+   * Navigate to the detail of the Patient or Practitioner
+   *
+   * @param {(IFhirPatient | IFhirPractitioner)} row
+   * @memberof DashboardComponent
+   */
+  goTo(row: IFhirPatient | IFhirPractitioner) {
+    this.router.navigate(['detail', row.resourceType.toLowerCase(), row.id]);
   }
 }

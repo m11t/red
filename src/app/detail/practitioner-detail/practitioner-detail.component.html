@@ -1,0 +1,13 @@
+<mat-card>
+    <mat-card-header>
+        <div mat-card-avatar>
+            <img *ngIf="practitioner.photo" [src]="'data:'+practitioner.photo[0].contentType+';base64,'+practitioner.photo[0].data">
+        </div>
+        <mat-card-title>{{ practitioner.name }}</mat-card-title>
+        <mat-card-subtitle>{{ practitioner.gender }}</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+        {{ practitioner.address }}
+    </mat-card-content>
+</mat-card>
